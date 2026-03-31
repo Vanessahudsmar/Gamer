@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>    
+    <meta charset="UTF-8">    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VEXIS | Marketplace Gamer</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap');
+        body { background-color: #f4f4f7; font-family: 'Inter', sans-serif; overflow-x: hidden; }
+        .product-card { transition: all 0.3s ease; }
+        .active-filter { background-color: #facc15 !important; color: #000 !important; }
+        .hide-scroll::-webkit-scrollbar { display: none; }
+        
+        @keyframes ticker {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+        .animate-ticker { display: flex; width: 200%; animation: ticker 25s linear infinite; }
+    </style>
+</head>
+<body class="flex flex-col min-h-screen">
+
+    <header class="bg-[#5119b7] text-white sticky top-0 z-[100] shadow-lg">
+        <div class="max-w-[1400px] mx-auto px-4 py-4 flex flex-col gap-4">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center gap-2 cursor-pointer" onclick="window.location.reload()">
+                    <i class="fa-solid fa-dragon text-2xl"></i>
+                    <h1 class="text-2xl font-800 tracking-tighter uppercase italic">VEXIS</h1>
+                </div>
+                <div class="flex-1 max-w-xl mx-4 relative">
+                    <input type="text" id="mainSearch" onkeyup="filterBySearch()" placeholder="Buscar ofertas..." 
+                           class="w-full bg-white/10 border border-white/20 rounded-lg py-2 px-10 focus:bg-white focus:text-black focus:outline-none transition-all">
+                    <i class="fa-solid fa-search absolute left-3 top-1/2 -translate-y-1/2 text-white/50"></i>
+                </div>
+            </div>
+            <nav class="flex gap-2 overflow-x-auto hide-scroll pb-1">
+                <button onclick="filterByCategory('', this)" class="cat-btn active-filter px-4 py-2 rounded-md bg-white/10 text-[11px] font-bold uppercase whitespace-nowrap">Explorar Tudo</button>
+                <button onclick="filterByCategory('Steam', this)" class="cat-btn px-4 py-2 rounded-md bg-white/10 text-[11px] font-bold uppercase whitespace-nowrap">Steam Keys</button>
+                <button onclick="filterByCategory('Xbox', this)" class="cat-btn px-4 py-2 rounded-md bg-white/10 text-[11px] font-bold uppercase whitespace-nowrap">Xbox</button>
+                <button onclick="filterByCategory('PlayStation', this)" class="cat-btn px-4 py-2 rounded-md bg-white/10 text-[11px] font-bold uppercase whitespace-nowrap">PlayStation</button>
+                <button onclick="filterByCategory('Edition', this)" class="cat-btn px-4 py-2 rounded-md bg-white/10 text-[11px] font-bold uppercase whitespace-nowrap">Edições Especiais</button>
+                <button onclick="filterByCategory('Gift', this)" class="cat-btn px-4 py-2 rounded-md bg-white/10 text-[11px] font-bold uppercase whitespace-nowrap">Gift Cards</button>
+            </nav>
+        </div>
+    </header>
+
+    <main class="max-w-[1400px] mx-auto px-4 py-8 flex-grow w-full">
+        
+        <section onclick="window.open('https://s.shopee.com.br/5VR29aqmWS', '_blank')" class="mb-6 cursor-pointer rounded-2xl overflow-hidden h-[200px] md:h-[350px] relative bg-black shadow-lg">
+            <img src="https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&q=80&w=1200" class="w-full h-full object-cover opacity-60">
+            <div class="absolute inset-0 p-6 md:p-12 flex flex-col justify-center items-start">
+                <span class="bg-yellow-400 text-black px-3 py-1 rounded-full text-[10px] font-black uppercase mb-2 italic">Destaques da Semana</span>
+                <h2 class="text-2xl md:text-5xl font-800 text-white leading-tight mb-4 uppercase italic">Upgrade no seu Setup<br>com Preço Imbatível</h2>
+                <button class="bg-white text-[#5119b7] font-black px-6 py-2 rounded-lg uppercase text-xs shadow-xl">Confira Agora</button>
+            </div>
+        </section>
+
+        <section class="w-screen relative left-1/2 right-1/2 -ml-[50vw] -mr-[50vw] bg-[#5119b7] text-white py-2 mb-12 overflow-hidden shadow-md">
+            <div class="animate-ticker text-[10px] font-black uppercase tracking-[3px] flex items-center gap-12 whitespace-nowrap">
+                <span>PROMOÇÕES ATIVAS</span> <span>•</span> <span>ENTREGA IMEDIATA</span> <span>•</span> <span>MELHORES PREÇOS</span> <span>•</span> <span>VEXIS GAMES MARKETPLACE</span>
+                <span>PROMOÇÕES ATIVAS</span> <span>•</span> <span>ENTREGA IMEDIATA</span> <span>•</span> <span>MELHORES PREÇOS</span> <span>•</span> <span>VEXIS GAMES MARKETPLACE</span>
+            </div>
+        </section>
+
+        <section id="gameSection">
+            <h2 id="sectionTitle" class="text-xl md:text-2xl font-800 uppercase italic mb-8 border-l-4 border-[#5119b7] pl-4 text-gray-800">Recomendados</h2>
+            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4 md:gap-6" id="mainGrid"></div>
+        </section>
+
+        <section class="w-screen relative left-1/2 right-1/2 -ml-[50vw] -mr-[50vw] bg-black text-white py-3 my-12 overflow-hidden">
+            <div class="animate-ticker text-[10px] font-bold uppercase tracking-[2px] flex items-center gap-10 whitespace-nowrap">
+                <span>GTA VI</span> <i class="fa-solid fa-fire text-orange-500"></i>
+                <span>ELDEN RING DLC</span> <i class="fa-solid fa-fire text-orange-500"></i>
+                <span>XBOX GAME PASS</span> <i class="fa-solid fa-fire text-orange-500"></i>
+                <span>PS PLUS</span> <i class="fa-solid fa-fire text-orange-500"></i>
+                <span>ROBUX</span> <i class="fa-solid fa-fire text-orange-500"></i>
+            </div>
+        </section>
+
+        <section class="mb-12 rounded-2xl overflow-hidden h-[250px] md:h-[380px] relative bg-gray-900 border-2 border-white">
+            <img src="imagemheader.jpg" class="w-full h-full object-cover opacity-70">
+            <div class="absolute inset-0 bg-gradient-to-r from-black/90 via-black/30 p-8 md:p-16 flex flex-col justify-center items-start text-white">
+                <h2 class="text-3xl md:text-5xl font-900 italic uppercase mb-4">Domine o Jogo.<br>Economize Agora.</h2>
+                <button onclick="window.open('https://s.shopee.com.br/5VR29aqmWS', '_blank')" class="bg-[#5119b7] font-black px-8 py-3 rounded-xl uppercase text-xs">Ver Ofertas</button>
+            </div>
+        </section>
+
+        <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4 md:gap-6" id="moreGamesGrid"></div>
+
+    </main>
+
+    <footer class="bg-gray-900 text-gray-400 py-12 border-t-8 border-[#5119b7]">
+        <div class="max-w-[1400px] mx-auto px-6">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-12 mb-10">
+                <div>
+                    <div class="flex items-center gap-2 mb-4 text-white">
+                        <i class="fa-solid fa-dragon text-2xl text-[#5119b7]"></i>
+                        <span class="text-2xl font-900 italic uppercase tracking-tighter">VEXIS</span>
+                    </div>
+                    <p class="text-xs leading-relaxed opacity-70">
+                        A VEXIS é uma plataforma de curadoria de ofertas gamer. 
+                        Nossa missão é encontrar os melhores preços em jogos e acessórios para facilitar a sua próxima aventura.
+                    </p>
+                </div>
+
+                <div>
+                    <h4 class="text-white font-bold uppercase text-[11px] tracking-widest mb-5">Formas de Pagamento</h4>
+                    <div class="flex flex-wrap gap-4 text-2xl text-gray-500">
+                        <i class="fa-brands fa-cc-visa hover:text-white transition-colors"></i>
+                        <i class="fa-brands fa-cc-mastercard hover:text-white transition-colors"></i>
+                        <i class="fa-brands fa-pix hover:text-white transition-colors"></i>
+                        <i class="fa-solid fa-barcode hover:text-white transition-colors"></i>
+                        <i class="fa-brands fa-apple-pay hover:text-white transition-colors"></i>
+                    </div>
+                </div>
+
+                <div>
+                    <h4 class="text-white font-bold uppercase text-[11px] tracking-widest mb-5">Aviso Importante</h4>
+                    <div class="bg-white/5 p-4 rounded-lg border border-white/10">
+                        <p class="text-[10px] leading-relaxed italic">
+                            <strong>Atenção:</strong> A VEXIS funciona estritamente como uma <strong>plataforma de afiliados</strong>. 
+                            Não realizamos a venda direta ou processamento de pagamentos em nosso servidor. 
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pt-8 border-t border-white/5 text-center">
+                <p class="text-[9px] uppercase tracking-[3px] font-bold opacity-40">
+                    © 2026 VEXIS GAMES MARKETPLACE | TODOS OS DIREITOS RESERVADOS
+                </p>
+            </div>
+        </div>
+    </footer>
+
+<script>
+    const LINK_FINAL = "https://s.shopee.com.br/5VR29aqmWS";
+    const API_URL = 'https://www.cheapshark.com/api/1.0/deals?upperPrice=100&pageSize=100';
+    let allProducts = [];
+
+    async function loadContent() {
+        try {
+            const response = await fetch(API_URL);
+            const data = await response.json();
+            allProducts = data.map(game => {
+                const salePrice = parseFloat(game.salePrice) * 5.5;
+                const normalPrice = parseFloat(game.normalPrice) * 5.5;
+                return {
+                    t: game.title,
+                    isFree: salePrice === 0,
+                    p: salePrice === 0 ? "GRÁTIS" : salePrice.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }),
+                    oldP: normalPrice.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }),
+                    desc: Math.round(parseFloat(game.savings)),
+                    i: game.steamAppID && game.steamAppID !== "0" ? `https://cdn.akamai.steamstatic.com/steam/apps/${game.steamAppID}/header.jpg` : game.thumb,
+                    link: LINK_FINAL
+                };
+            });
+            render(allProducts);
+        } catch (e) { console.error(e); }
+    }
+
+    function createCard(item) {
+        return `
+            <div onclick="window.open('${item.link}', '_blank')" class="product-card bg-white rounded-xl overflow-hidden border border-gray-100 flex flex-col cursor-pointer shadow-sm">
+                <div class="relative aspect-[16/9] overflow-hidden bg-gray-200">
+                    <img src="${item.i}" class="w-full h-full object-cover" onerror="this.src='https://images.unsplash.com/photo-1542751371-adc38448a05e?q=80&w=400&auto=format&fit=crop'">
+                    ${item.desc > 5 ? `<span class="absolute top-2 right-2 bg-red-600 text-white text-[9px] font-black px-1.5 py-0.5 rounded italic">-${item.desc}%</span>` : ''}
+                </div>
+                <div class="p-4 flex flex-col flex-1">
+                    <h4 class="text-[11px] font-bold text-gray-800 line-clamp-2 h-8 mb-2 uppercase tracking-tighter leading-tight">${item.t}</h4>
+                    <div class="mt-auto">
+                        <p class="text-[8px] text-gray-400 line-through">${item.oldP}</p>
+                        <p class="text-lg font-900 ${item.isFree ? 'text-green-600' : 'text-[#5119b7]'} italic leading-none">${item.p}</p>
+                    </div>
+                    <button class="mt-4 w-full bg-[#5119b7] text-white py-2 rounded-lg text-[10px] font-black uppercase tracking-widest">Ver Oferta</button>
+                </div>
+            </div>
+        `;
+    }
+
+    function render(list) {
+        const grid1 = document.getElementById('mainGrid');
+        const grid2 = document.getElementById('moreGamesGrid');
+        const metade = Math.ceil(list.length / 2);
+        grid1.innerHTML = list.slice(0, metade).map(item => createCard(item)).join('');
+        grid2.innerHTML = list.slice(metade).map(item => createCard(item)).join('');
+    }
+
+    function filterBySearch() {
+        const term = document.getElementById('mainSearch').value.toLowerCase();
+        const filtered = allProducts.filter(p => p.t.toLowerCase().includes(term));
+        updateView(filtered);
+    }
+
+    function filterByCategory(cat, btn) {
+        document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active-filter'));
+        btn.classList.add('active-filter');
+        
+        document.getElementById('sectionTitle').innerText = cat || 'Todos os Jogos';
+
+        let filtered = [];
+        if (!cat) {
+            filtered = allProducts;
+        } else {
+            // Filtro dinâmico: busca pelo nome da categoria
+            filtered = allProducts.filter(p => p.t.toLowerCase().includes(cat.toLowerCase()));
+            
+            // Caso especial: se o filtro estiver vazio (como PSN), mostra as melhores ofertas 
+            // (Savings acima de 80%) para não deixar o site vazio.
+            if (filtered.length === 0) {
+                filtered = allProducts.filter(p => p.desc > 80).slice(0, 18);
+                document.getElementById('sectionTitle').innerText = `Ofertas de ${cat}`;
+            }
+        }
+        
+        updateView(filtered);
+        window.scrollTo({ top: document.getElementById('gameSection').offsetTop - 80, behavior: 'smooth' });
+    }
+
+    function updateView(list) {
+        const grid1 = document.getElementById('mainGrid');
+        const grid2 = document.getElementById('moreGamesGrid');
+        grid1.innerHTML = list.map(item => createCard(item)).join('');
+        grid2.innerHTML = ''; // Limpa a grade de baixo no filtro para foco total
+    }
+
+    document.addEventListener('DOMContentLoaded', loadContent);
+</script>
+</body>
+</html>
